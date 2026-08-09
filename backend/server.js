@@ -103,3 +103,23 @@ const startServer = async () => {
 startServer().catch(console.error);
 
 module.exports = app;
+
+// ─── Vercel Serverless Adapter ────────────────────────────────────────────────
+const serverless = require('serverless-http');
+const connectDB = require('./src/config/db');
+
+// Cache the database connection globally to prevent reconnecting on every request
+let dbConnectionPromise = null;
+
+// Vercel serverless handler
+exports.handler = async (event, context) => {
+  // Ensure database connects only once across cold starts
+  if (!dbConnectionPromise) {
+    dbConnectionPromise = connectDB();
+  }
+  await dbConnectionPromise;
+
+  // Run the Express app through the serverless adapter
+  const handler = serverless(app);
+  return handler(event, context);
+};
