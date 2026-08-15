@@ -1,198 +1,131 @@
-# MedTrace AI – Government Unified Health Passport
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-
-A full-stack Government Unified Health Passport system with AI triage, QR sharing, DICOM viewer, and emergency break-glass protocol.
+# MedTrace AI 🏥
+### Government Unified Health Passport — AI-Powered Medical Records Platform
 
 ---
 
-## 🚀 Quick Start (Hackathon Demo Mode)
+## 🚀 Quick Start
 
-The app ships with **mock authentication** and **seed data** — no API keys needed to run the demo immediately.
-
+### 1. Clone & Install
 ```bash
-# Clone and install
-git clone <repo>
-cd medtrace-ai
-
-# Install backend deps
-cd backend && npm install
-
-# Install frontend deps  
-cd ../frontend && npm install
-
-# Start backend (in one terminal)
-cd backend && npm run dev
-
-# Start frontend (in another terminal)
-cd frontend && npm run dev
+git clone <repo-url>
+cd MedTrace
+npm install
 ```
 
-Open http://localhost:5173 and log in with the demo accounts below.
+### 2. Environment Variables
+Create a `.env.local` file in the root directory:
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/?appName=MedTraceAI
+NEXTAUTH_SECRET=medtrace_super_secret_key_change_in_production
+NEXTAUTH_URL=http://localhost:3000
+HUGGINGFACE_API_KEY=hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+HUGGINGFACE_MODEL=mistralai/Mistral-7B-Instruct-v0.3
+NEXT_PUBLIC_APP_NAME=MedTrace AI
+```
 
----
-
-## 🔑 Demo Login Accounts
-
-| Role | Email | Password |
-|------|-------|----------|
-| **Citizen** | citizen@demo.com | demo123 |
-| **Doctor** | doctor@demo.com | demo123 |
-| **Diagnostic Center** | diagnostic@demo.com | demo123 |
-| **System Admin** | admin@demo.com | demo123 |
-
----
-
-## 🌍 Environment Variables Setup
-
-### Backend Setup
-
+### 3. Seed Demo Data
 ```bash
-cd backend
-cp .env.example .env
+node scripts/seed.js
 ```
 
-Edit `.env` with your actual values:
+### 4. Run Development Server
+```bash
+npm run dev
+```
 
-| Variable | Source | Required for Demo? |
-|----------|--------|--------------------|
-| `GROQ_API_KEY` | [console.groq.com](https://console.groq.com) (Free) | Optional (mock fallback) |
-| `MONGODB_URI` | [mongodb.com/atlas](https://mongodb.com/atlas) (Free) | Optional (in-memory mock) |
-| `CLERK_PUBLISHABLE_KEY` | [clerk.com](https://clerk.com) | ❌ Not needed (mock auth) |
-| `CLERK_SECRET_KEY` | [clerk.com](https://clerk.com) | ❌ Not needed (mock auth) |
-| `TWILIO_ACCOUNT_SID` | [twilio.com](https://twilio.com) | ❌ Not needed (logs to console) |
-| `TWILIO_AUTH_TOKEN` | [twilio.com](https://twilio.com) | ❌ Not needed |
-| `TWILIO_PHONE_NUMBER` | [twilio.com](https://twilio.com) | ❌ Not needed |
-
-> **For the hackathon demo**: Only `GROQ_API_KEY` and `MONGODB_URI` are needed for full functionality. Everything else uses mock fallbacks automatically.
-
-### Getting Groq API Key (Free)
-1. Visit [console.groq.com](https://console.groq.com)
-2. Sign up with Google/GitHub (no credit card)
-3. Go to API Keys → Create API Key
-4. Copy and paste into `GROQ_API_KEY=`
-
-### Getting MongoDB URI (Free)
-1. Visit [mongodb.com/atlas](https://mongodb.com/atlas)
-2. Create free cluster (M0 tier)
-3. Create database user and whitelist your IP
-4. Click "Connect" → "Connect your application" → Copy the URI
-5. Replace `<password>` in the URI with your database password
+Visit [http://localhost:3000](http://localhost:3000)
 
 ---
 
-## 🗂️ Project Structure
+## 🔐 Demo Login Credentials
 
-```
-medtrace-ai/
-├── frontend/                 # React 18 + Vite + Tailwind CSS
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── common/       # Shared components (Sidebar, Header, etc.)
-│   │   │   ├── citizen/
-│   │   │   ├── doctor/
-│   │   │   ├── diagnostic/
-│   │   │   └── admin/
-│   │   ├── pages/            # All route pages
-│   │   ├── context/          # React context (Auth, App state)
-│   │   ├── services/         # API service layer + mock data
-│   │   ├── hooks/            # Custom React hooks
-│   │   └── styles/           # Global CSS
-│   └── package.json
-├── backend/                  # Node.js + Express + MongoDB
-│   ├── src/
-│   │   ├── models/           # Mongoose schemas
-│   │   ├── routes/           # Express routes
-│   │   ├── controllers/      # Business logic
-│   │   ├── middleware/        # Auth, validation
-│   │   ├── services/         # AI, OCR, notifications
-│   │   └── utils/            # Helper utilities
-│   ├── scripts/              # Seed data
-│   ├── server.js
-│   └── .env.example
-└── README.md
-```
+| Role | ID | Password |
+|------|----|----------|
+| Citizen | `1234567890` | `password` |
+| Doctor | `DOC001` | `password` |
+| Diagnostic Center | `DOC002` | `password` |
+| Admin | `ADMIN001` | `password` |
 
 ---
 
-## 🛡️ Security Architecture
+## ✨ Features
 
-- **One Account Per Citizen**: Government ID uniqueness enforced at DB level
-- **Role-Based Access Control**: Citizens cannot upload/edit/delete
-- **QR Sessions**: Encrypted tokens, auto-expire in 5 minutes
-- **Emergency Protocol**: Logged, audited, 15-min max access
-- **Audit Trail**: Every access event logged with IP, timestamp, actor
+### Citizen Portal
+- **Timeline** — Chronological medical history with filters
+- **AI Summary** — Red/Orange/Green triage overview via Hugging Face AI
+- **QR Code Generator** — Time-limited consent-based QR with revoke
+- **Notifications** — Real-time alerts on record access
+- **Profile** — View and edit personal information
+
+### Doctor Portal
+- **QR Scan** — Validate patient QR sessions for record access
+- **Emergency Override** — Break-glass access with 15-minute timer and full audit logging
+- **Patient View** — AI triage summary + complete medical timeline
+- **Audit Log** — Personal access history with CSV export
+
+### Diagnostic Center Portal
+- **Upload Scan** — Search patient by Gov ID and upload reports
+- **Upload History** — View all uploads with type filters
+
+### Admin Portal
+- **Citizens** — Search and manage all registered citizens
+- **Doctors** — Approve/revoke doctor verification
+- **Hospitals** — View registered healthcare facilities
+- **System Audit Log** — Complete audit trail with CSV export
 
 ---
 
-## 🧰 Technology Stack
+## 🏗️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + Vite + Tailwind CSS |
-| Backend | Node.js + Express.js |
-| Database | MongoDB Atlas (Mongoose) |
-| Authentication | Mock Auth (Clerk-ready) |
-| AI | Groq API + Llama 3 |
-| OCR | Tesseract.js (browser-side) |
-| QR Codes | qrcode.react |
-| DICOM Viewer | Cornerstone.js |
-| Charts | Recharts |
-| Animations | Framer Motion |
-| PDF Export | jsPDF + html2canvas |
+|-------|------------|
+| Framework | Next.js 14 (App Router) |
+| Styling | Tailwind CSS |
+| Auth | NextAuth.js (Credentials Provider) |
+| Database | MongoDB (Mongoose) |
+| AI | Hugging Face — Mistral 7B |
+| QR Code | qrcode.react |
+| Icons | Lucide React |
 
 ---
 
-## 🌱 Seeding Demo Data
-
-```bash
-cd backend
-npm run seed
+## 📁 Project Structure
+```
+src/
+├── app/
+│   ├── api/          # Backend API routes
+│   ├── citizen/      # Citizen pages
+│   ├── doctor/       # Doctor pages
+│   ├── diagnostic/   # Diagnostic center pages
+│   ├── admin/        # Admin pages
+│   └── login/        # Auth pages
+├── components/       # Shared UI components
+├── lib/              # DB connection, auth config
+└── models/           # Mongoose models
+    ├── User.ts
+    ├── Record.ts
+    ├── QRSession.ts
+    ├── AuditLog.ts
+    └── Notification.ts
 ```
 
-This creates:
-- 3 demo patients with complete medical histories
-- 2 verified doctors
-- 1 approved hospital
-- Sample scan records, AI summaries, audit logs
+---
+
+## 🌐 Deploy to Vercel
+
+1. Push to GitHub
+2. Import project in [vercel.com](https://vercel.com)
+3. Add environment variables in Vercel project settings
+4. Deploy!
+
+> **Note:** Make sure your MongoDB Atlas cluster allows connections from `0.0.0.0/0` (all IPs) for Vercel serverless functions.
 
 ---
 
-## 🚀 Deployment
+## 🔑 Required APIs
 
-### Frontend → Vercel
-```bash
-cd frontend
-npm run build
-# Deploy dist/ folder to Vercel
-```
-
-### Backend → Render
-1. Push backend folder to GitHub
-2. Create new Web Service on Render
-3. Set environment variables in Render dashboard
-4. Deploy
-
----
-
-## 📋 Feature Checklist
-
-- [x] Unified Identity System (Government ID → Health ID)
-- [x] Citizen Dashboard (View-only)
-- [x] Doctor Dashboard + QR Scan
-- [x] Emergency Break-Glass Protocol
-- [x] Diagnostic Center Upload
-- [x] System Administrator Dashboard
-- [x] AI Triage (Groq + Llama 3)
-- [x] OCR Digitization (Tesseract.js)
-- [x] Secure QR Sharing
-- [x] Audit Trail
-- [x] DICOM Viewer
-- [x] PDF Download
-- [x] Mobile Responsive
-
----
-
-## 📄 License
-
-MIT © MedTrace AI Team
+| Service | Required | Purpose |
+|---------|----------|---------|
+| MongoDB Atlas | ✅ Yes | Database for all records |
+| Hugging Face | ⚠️ Optional | AI summarization (mock fallback included) |
+| Cloudinary | ❌ No | File uploads (base64 used as fallback) |
