@@ -20,13 +20,13 @@ async function seed() {
     // Admin
     await User.create({
       name: "System Administrator", role: "admin",
-      licenseNumber: "ADMIN001", password: "password", isVerified: true
+      licenseNumber: "ADMIN001", password: "password", email: "admin@medtrace.com", isVerified: true, healthId: "HID-ADMIN"
     });
 
     // Citizens
     const [john, jane, robert] = await User.insertMany([
       {
-        name: "Arjun Kumar", role: "citizen", govId: "1234567890", healthId: "HID-A7X2K", password: "password", dob: "1985-05-15", phone: "+91-9876543210", email: "arjun@example.com", isVerified: true,
+        name: "Arjun Kumar", role: "citizen", govId: "123456789012", healthId: "HID-A7X2K", password: "password", dob: "1985-05-15", phone: "9876543210", email: "arjun@example.com", isVerified: true,
         medicalHistory: "Diagnosed with Stage 1 Hypertension in Jan 2023. Prescribed Amlodipine 5mg OD. Routine CBC in May 2023 was normal (Hb 14.2 g/dL). Mild sinus bradycardia noted on ECG in Feb 2024. Normal MRI brain study in June 2024 for headache investigation. Known allergy to Penicillin."
       },
       {
@@ -41,9 +41,9 @@ async function seed() {
 
     // Doctors & Diagnostic
     const [priya, rajesh, amit] = await User.insertMany([
-      { name: "Dr. Priya Sharma", role: "doctor", licenseNumber: "DOC001", password: "password", hospital: "City Hospital", specialization: "Cardiology", isVerified: true },
-      { name: "Dr. Rajesh Mehta", role: "diagnostic", licenseNumber: "DOC002", password: "password", hospital: "Apollo Diagnostics", isVerified: true },
-      { name: "Dr. Amit Gupta", role: "doctor", licenseNumber: "DOC003", password: "password", hospital: "AIIMS", specialization: "General Medicine", isVerified: true }
+      { name: "Dr. Priya Sharma", role: "doctor", licenseNumber: "DOC001", registrationNumber: "DOC001", phone: "9876543211", password: "password", hospital: "City Hospital", specialization: "Cardiology", isVerified: true, healthId: "HID-D1X2K" },
+      { name: "Dr. Rajesh Mehta", role: "diagnostic", licenseNumber: "DOC002", registrationNumber: "DOC002", phone: "9876543212", password: "password", hospital: "Apollo Diagnostics", isVerified: true, healthId: "HID-D2X3K" },
+      { name: "Dr. Amit Gupta", role: "doctor", licenseNumber: "DOC003", registrationNumber: "DOC003", phone: "9876543213", password: "password", hospital: "AIIMS", specialization: "General Medicine", isVerified: true, healthId: "HID-D3X4K" }
     ]);
 
     // Medical Records for Arjun Kumar
@@ -98,10 +98,10 @@ async function seed() {
 
     console.log("\n✅ Seed data inserted successfully!");
     console.log("\n📋 DEMO CREDENTIALS:");
-    console.log("  Citizen:    1234567890 / password");
+    console.log("  Citizen:    123456789012 / password");
     console.log("  Doctor:     DOC001 / password");
     console.log("  Diagnostic: DOC002 / password");
-    console.log("  Admin:      ADMIN001 / password");
+    console.log("  Admin:      admin@medtrace.com / password");
     process.exit(0);
   } catch (err) {
     console.error("❌ Seed failed:", err.message);

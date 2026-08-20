@@ -53,10 +53,10 @@ export default function LoginPage() {
           <div className="bg-white/10 p-4 rounded-xl border border-white/20">
             <h3 className="font-semibold text-gov-gold mb-2 text-sm uppercase tracking-wider">Demo Access</h3>
             <ul className="text-sm space-y-2 text-blue-50">
-              <li><span className="font-semibold">Citizen:</span> 1234567890 / password</li>
+              <li><span className="font-semibold">Citizen:</span> 123456789012 / password</li>
               <li><span className="font-semibold">Doctor:</span> DOC001 / password</li>
               <li><span className="font-semibold">Diagnostic:</span> DOC002 / password</li>
-              <li><span className="font-semibold">Admin:</span> ADMIN001 / password</li>
+              <li><span className="font-semibold">Admin:</span> admin@medtrace.com / password</li>
             </ul>
           </div>
         </div>
@@ -104,6 +104,11 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <div className="mt-2 text-right">
+                <a href="/auth/forgot-password" className="text-sm font-medium text-gov-navy hover:text-[#122b50] hover:underline">
+                  Forgot Password?
+                </a>
+              </div>
             </div>
             
             <button
@@ -122,7 +127,13 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+          <div className="mt-8 pt-6 border-t border-gray-100 text-center space-y-4">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{" "}
+              <a href="/auth/register" className="font-semibold text-gov-navy hover:text-[#122b50] hover:underline">
+                Sign Up
+              </a>
+            </p>
             <p className="text-xs text-gray-400">
               By logging in, you agree to the Government Health Data Privacy Guidelines. Unauthorized access is strictly prohibited and logged.
             </p>

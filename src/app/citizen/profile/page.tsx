@@ -44,7 +44,7 @@ export default function ProfilePage() {
   const fields = [
     { label: "Full Name", value: profile.name, editable: false },
     { label: "Government ID", value: profile.govId || "-", editable: false },
-    { label: "Health ID", value: profile.healthId || "-", editable: false },
+    { label: "Your Government Health ID", value: profile.healthId || "-", editable: false },
     { label: "Date of Birth", value: profile.dob ? new Date(profile.dob).toLocaleDateString("en-IN") : "-", editable: false },
   ];
 
