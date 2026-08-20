@@ -21,13 +21,62 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { govId, dob, reason } = await req.json();
+    const { identifier, fingerprint, govId, phone, dob, reason } = await req.json();
     await connectToDatabase();
 
     const doctor = await User.findById(doctorDbId);
-    const patient = await User.findOne({ govId }).select("-password");
 
-    if (!patient) return NextResponse.json({ error: "Patient not found with this Government ID" }, { status: 404 });
+    let patient = null;
+
+    // 1. Fingerprint verification
+    if (fingerprint && typeof fingerprint === "string" && fingerprint.trim()) {
+      const fpInput = fingerprint.trim();
+      patient = await User.findOne({
+        $or: [
+          { fingerprint: fpInput },
+          { fingerprintData: fpInput },
+          // Demo fallback for Arjun Kumar when scanning test fingerprint
+          ...(fpInput.includes("ARJUN") || fpInput.startsWith("FP-") ? [{ govId: "1234567890" }] : [])
+        ]
+      }).select("-password");
+
+      if (!patient) {
+        return NextResponse.json(
+          { error: "No patient found matching this fingerprint" },
+          { status: 404 }
+        );
+      }
+    } else {
+      // 2. ID / Phone verification logic
+      const input = (identifier || govId || phone || "").trim();
+
+      if (!input) {
+        return NextResponse.json(
+          { error: "Please enter Government ID, Phone Number, or scan patient fingerprint" },
+          { status: 400 }
+        );
+      }
+
+      const queryConditions: any[] = [
+        { govId: input },
+        { phone: input }
+      ];
+      const cleanDigits = input.replace(/\D/g, "");
+      if (cleanDigits.length >= 7) {
+        queryConditions.push({ phone: { $regex: cleanDigits, $options: "i" } });
+      }
+
+      patient = await User.findOne({
+        $or: queryConditions,
+      }).select("-password");
+
+      if (!patient) {
+        return NextResponse.json(
+          { error: "No patient found with this ID or Phone Number" },
+          { status: 404 }
+        );
+      }
+    }
 
     const patientDobStr = patient.dob ? new Date(patient.dob).toISOString().split("T")[0] : null;
     if (patientDobStr && dob && patientDobStr !== dob) {

@@ -12,6 +12,7 @@ export interface IUser extends Document {
   dob?: string;
   phone?: string;
   email?: string;
+  fingerprint?: string; // Hashed biometric fingerprint data
   hospital?: string; // For diagnostic/doctors
   specialization?: string;
   isVerified: boolean;
@@ -37,6 +38,7 @@ const UserSchema: Schema = new Schema(
     dob: { type: String },
     phone: { type: String },
     email: { type: String },
+    fingerprint: { type: String, sparse: true },
     hospital: { type: String },
     specialization: { type: String },
     isVerified: { type: Boolean, default: false },
